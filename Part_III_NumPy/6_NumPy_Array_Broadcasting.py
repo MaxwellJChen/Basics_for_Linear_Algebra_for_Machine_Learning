@@ -25,15 +25,35 @@ try:
 except: # ValueError: operands could not be broadcast together with shapes (2,3) (2,)
     print("Failure.")
 
-data1 = np.array([[[1, 2],
+data1 = np.array([[[1, 2], # (2, 3, 2)
                    [3, 4],
                    [5, 6]],
                   [[1, 2],
                    [3, 4],
                    [5, 6]]])
-data2 = np.array([[1, 2],
+data2 = np.array([[1, 2], # (3, 2)
                    [3, 4],
                    [5, 6]])
 print(data1.shape)
 print(data2.shape)
 print(data1 + data2)
+
+"""Extensions"""
+def broadcast(arr1, arr2):
+    """Manually implements NumPy broadcasting for 1D and 2D arrays
+    where arr1 is the larger array 2D array and arr2 is either a scalar
+    or a 1D array."""
+    arr1 = np.copy(arr1)
+    arr2 = np.copy(arr2)
+    if arr2.shape[0] == 1: # arr2 is a scalar
+        for i in range(arr1.shape[0]):
+            for j in range(arr1.shape[1]):
+                arr1[i, j] += arr2
+    elif arr2.shape[0] != arr1.shape[1]: # Shapes are incompatible
+        raise Exception(f"Shape {arr1.shape} is incompatible with {arr2.shape}.")
+    else:
+        for i in range(arr1.shape[0]):
+            for j in range(arr1.shape[1]):
+                arr1[i, j] += arr2[j]
+
+    return arr1
